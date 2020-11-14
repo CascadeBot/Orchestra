@@ -12,13 +12,14 @@ import org.cascadebot.orchestra.data.enums.NodeType;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class CascadeLavalink extends Lavalink<CascadeLink> implements EventListener {
 
-    private Map<String, CascadeLink> linkMap;
+    private Map<String, CascadeLink> linkMap = new HashMap<>();
     private Function<Integer, JDA> jdaProvider;
     private int shards;
     private List<LavalinkNode> lavalinkNodes = new ArrayList<>();
