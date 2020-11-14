@@ -184,12 +184,16 @@ public class CascadePlayer {
         }
     }
 
-    public void addTrack(AudioTrack audioTrack) {
-        queue.add(audioTrack);
+    public void addTrack(AudioTrack track) {
+        if (getPlayingTrack() != null) {
+            queue.add(track);
+        } else {
+            playTrack(track);
+        }
     }
 
-    public void addTracks(List<AudioTrack> audioTracks) {
-        queue.addAll(audioTracks);
+    public void addTracks(Collection<AudioTrack> tracks) {
+        tracks.forEach(this::addTrack);
     }
 
     public void setQueue(LinkedList<AudioTrack> queue) {
