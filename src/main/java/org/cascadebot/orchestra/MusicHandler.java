@@ -87,4 +87,8 @@ public class MusicHandler {
     public AudioPlayerManager getPlayerManager() {
         return playerManager;
     }
+
+    public CascadeLavalink getLavalink() {
+        return lavalink;
+    }
 }

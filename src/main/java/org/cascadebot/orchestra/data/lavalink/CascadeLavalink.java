@@ -60,9 +60,9 @@ public class CascadeLavalink extends Lavalink<CascadeLink> implements EventListe
     }
 
     public void addNode(LavalinkNode node) {
-        super.addNode(node.getName(), URI.create(node.getHost()), node.getPassword());
+        super.addNode(node.getName(), node.getHost(), node.getPassword());
         node.setLavalinkSocket(getNodes().stream().filter(lavalinkSocket -> lavalinkSocket.getName().equals(node.getName())
-                && lavalinkSocket.getRemoteUri().equals(URI.create(node.getHost()))).findFirst().orElseThrow()); // We need to do this to get the socket
+                && lavalinkSocket.getRemoteUri().equals(node.getHost())).findFirst().orElseThrow()); // We need to do this to get the socket
         lavalinkNodes.add(node);
     }
 

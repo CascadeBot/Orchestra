@@ -3,15 +3,17 @@ package org.cascadebot.orchestra.data;
 import lavalink.client.io.LavalinkSocket;
 import org.cascadebot.orchestra.data.enums.NodeType;
 
+import java.net.URI;
+
 public class LavalinkNode {
 
     private final String name;
-    private final String host;
+    private final URI host;
     private final String password;
     private final NodeType nodeType;
     private LavalinkSocket lavalinkSocket;
 
-    public LavalinkNode(String name, String host, String password, NodeType nodeType) {
+    public LavalinkNode(String name, URI host, String password, NodeType nodeType) {
         this.name = name;
         this.host = host;
         this.password = password;
@@ -22,7 +24,7 @@ public class LavalinkNode {
         return name;
     }
 
-    public String getHost() {
+    public URI getHost() {
         return host;
     }
 
