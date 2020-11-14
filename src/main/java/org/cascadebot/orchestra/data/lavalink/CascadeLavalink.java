@@ -52,7 +52,9 @@ public class CascadeLavalink extends Lavalink<CascadeLink> implements EventListe
     }
 
     private CascadeLink buildNewLink(String guildId, NodeType type) {
-        return new CascadeLink(this, guildId, type);
+        CascadeLink cascadeLink = new CascadeLink(this, guildId, type);
+        linkMap.put(guildId, cascadeLink);
+        return cascadeLink;
     }
 
     public JDA getJdaFromGuild(String guildId) {
