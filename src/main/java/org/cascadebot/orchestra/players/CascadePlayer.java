@@ -184,6 +184,18 @@ public class CascadePlayer {
         }
     }
 
+    public void addTrack(AudioTrack audioTrack) {
+        queue.add(audioTrack);
+    }
+
+    public void addTracks(List<AudioTrack> audioTracks) {
+        queue.addAll(audioTracks);
+    }
+
+    public void setQueue(LinkedList<AudioTrack> queue) {
+        this.queue = queue;
+    }
+
     /* region Player methods */
     public AudioTrack getPlayingTrack() {
         return player.getPlayingTrack();
