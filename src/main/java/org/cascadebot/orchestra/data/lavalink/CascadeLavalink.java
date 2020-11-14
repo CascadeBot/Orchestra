@@ -24,7 +24,7 @@ public class CascadeLavalink extends Lavalink<CascadeLink> implements EventListe
     private int shards;
     private List<LavalinkNode> lavalinkNodes = new ArrayList<>();
     private String userId;
-    private CascadeLoadBalancer cascadeLoadBalancer;
+    private CascadeLoadBalancer cascadeLoadBalancer = new CascadeLoadBalancer(this);
     private CascadeVoiceInterceptor cascadeVoiceInterceptor = new CascadeVoiceInterceptor(this);
 
     public CascadeLavalink(String userId, int numShards, Function<Integer, JDA> jdaProvider) {
