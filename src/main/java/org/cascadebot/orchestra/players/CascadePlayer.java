@@ -101,8 +101,8 @@ public class CascadePlayer {
         player.playTrack(track);
     }
 
-    public List<AudioTrack> getQueue() {
-        return List.copyOf(queue);
+    public Queue<AudioTrack> getQueue() {
+        return queue;
     }
 
     public void skip() {
