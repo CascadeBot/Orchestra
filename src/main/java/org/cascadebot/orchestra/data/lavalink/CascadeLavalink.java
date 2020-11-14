@@ -34,8 +34,17 @@ public class CascadeLavalink extends Lavalink<CascadeLink> implements EventListe
         this.userId = userId;
     }
 
+    @Override
+    public CascadeLink getLink(String guildId) {
+        return getLink(guildId, null);
+    }
+
     public CascadeLink getLink(String guildId, NodeType nodeType) {
-        return linkMap.getOrDefault(guildId, buildNewLink(guildId, nodeType));
+        if (nodeType != null) {
+            return linkMap.getOrDefault(guildId, buildNewLink(guildId, nodeType));
+        } else {
+            return linkMap.get(guildId);
+        }
     }
 
     protected CascadeLink buildNewLink(String guildId) {
