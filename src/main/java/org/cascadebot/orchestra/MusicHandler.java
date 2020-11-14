@@ -67,16 +67,16 @@ public class MusicHandler {
         instance = this;
     }
 
-    public CascadePlayer getPlayer(Guild guild, NodeType nodeType) {
-        if (players.containsKey(guild.getIdLong())) {
-            return players.get(guild.getIdLong());
+    public CascadePlayer getPlayer(String guildId, NodeType nodeType) {
+        if (players.containsKey(Long.parseLong(guildId))) {
+            return players.get(Long.parseLong(guildId));
         } else {
-            return createPlayer(guild, nodeType);
+            return createPlayer(guildId, nodeType);
         }
     }
 
-    private CascadePlayer createPlayer(Guild guild, NodeType nodeType) {
-        IPlayer player = lavalink.getLink(guild, nodeType).getPlayer();
+    private CascadePlayer createPlayer(String guildId, NodeType nodeType) {
+        IPlayer player = lavalink.getLink(guildId, nodeType).getPlayer();
         return new CascadePlayer(player);
     }
 
