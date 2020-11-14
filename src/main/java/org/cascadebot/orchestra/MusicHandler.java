@@ -114,7 +114,7 @@ public class MusicHandler {
         return lavalink;
     }
 
-    public void searchTracks(String search, TextChannel channel, String youtubeKey, Consumer<List<SearchResult>> searchResult, Consumer<Throwable> exceptionConsumer) {
+    public void searchTracks(String search, String youtubeKey, Consumer<List<SearchResult>> searchResult, Consumer<Throwable> exceptionConsumer) {
         Request request = new Request.Builder().url("https://www.googleapis.com/youtube/v3/search?part=snippet&q=" +
                 URLEncoder.encode(search, StandardCharsets.UTF_8) + "&key=" + URLEncoder.encode(youtubeKey, StandardCharsets.UTF_8) +
                 "&maxResults=5&type=video,playlist").build();
