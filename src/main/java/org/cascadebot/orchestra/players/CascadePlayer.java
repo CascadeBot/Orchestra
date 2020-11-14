@@ -5,7 +5,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lavalink.client.player.IPlayer;
+import lavalink.client.player.LavalinkPlayer;
+import lavalink.client.player.LavaplayerPlayerWrapper;
 import lavalink.client.player.event.IPlayerEventListener;
+import org.cascadebot.orchestra.MusicHandler;
 import org.cascadebot.orchestra.data.Playlist;
 import org.cascadebot.orchestra.data.enums.LoopMode;
 import org.cascadebot.orchestra.data.TrackData;
@@ -19,7 +22,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.function.Consumer;
 
-public class CascadePlayer implements IPlayer {
+public class CascadePlayer {
 
     private Queue<AudioTrack> queue = new LinkedList<>();
 
@@ -29,6 +32,10 @@ public class CascadePlayer implements IPlayer {
     private boolean shuffle = false;
 
     private IPlayer player;
+
+    public CascadePlayer(IPlayer player) {
+        this.player = player;
+    }
 
     public double getQueueLength(boolean includeCurrentSong) {
         double queueLength = 0;
@@ -132,7 +139,7 @@ public class CascadePlayer implements IPlayer {
     }
 
     public void loadLink(String input, TrackData trackData, Consumer<String> noMatchConsumer, Consumer<FriendlyException> exceptionConsumer, Consumer<List<AudioTrack>> resultTracks) {
-        /* CascadeBot.INS.getMusicHandler().getPlayerManager().loadItem(input, new AudioLoadResultHandler() {
+        MusicHandler.getInstance().getPlayerManager().loadItem(input, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
                 audioTrack.setUserData(trackData);
@@ -158,7 +165,7 @@ public class CascadePlayer implements IPlayer {
             public void loadFailed(FriendlyException e) {
                 exceptionConsumer.accept(e);
             }
-        }); */
+        });
     }
 
     public void loadLoadedPlaylist(Playlist playlist, TrackData trackData, Consumer<List<AudioTrack>> loadedConsumer) {
@@ -178,12 +185,10 @@ public class CascadePlayer implements IPlayer {
     }
 
     /* region Player methods */
-    @Override
     public AudioTrack getPlayingTrack() {
         return player.getPlayingTrack();
     }
 
-    @Override
     public void playTrack(AudioTrack track) {
         if (getPlayingTrack() != null) {
             queue.add(track);
@@ -192,51 +197,49 @@ public class CascadePlayer implements IPlayer {
         }
     }
 
-    @Override
     public void stopTrack() {
         player.stopTrack();
     }
 
-    @Override
     public void setPaused(boolean b) {
         player.setPaused(b);
     }
 
-    @Override
     public boolean isPaused() {
         return player.isPaused();
     }
 
-    @Override
     public long getTrackPosition() {
-        return 0L;
+        if (player instanceof LavalinkPlayer) {
+            return player.getTrackPosition();
+        } else if (player instanceof LavaplayerPlayerWrapper) {
+            if (player.getPlayingTrack() == null) throw new IllegalStateException("Not playing anything!");
+            return player.getPlayingTrack().getDuration();
+        } else {
+            throw new UnsupportedOperationException("This method is only supported when using the built-in players"); // TODO maybe allow other players if we wish to make further custom players
+        }
     }
 
     public long getTrackDuration() {
         return getPlayingTrack().getDuration();
     }
 
-    @Override
     public void seekTo(long position) {
         player.seekTo(position);
     }
 
-    @Override
     public void setVolume(int volume) {
         player.setVolume(volume);
     }
 
-    @Override
     public int getVolume() {
         return player.getVolume();
     }
 
-    @Override
     public void addListener(IPlayerEventListener listener) {
         player.addListener(listener);
     }
 
-    @Override
     public void removeListener(IPlayerEventListener listener) {
         player.removeListener(listener);
     }

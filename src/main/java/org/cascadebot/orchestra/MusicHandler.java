@@ -2,23 +2,22 @@ package org.cascadebot.orchestra;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.bandcamp.BandcampAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.beam.BeamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
-import lavalink.client.io.jda.JdaLavalink;
+import lavalink.client.player.IPlayer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.cascadebot.orchestra.data.LavalinkNode;
 import org.cascadebot.orchestra.data.enums.NodeType;
+import org.cascadebot.orchestra.data.lavalink.CascadeLavalink;
 import org.cascadebot.orchestra.players.CascadePlayer;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,7 @@ public class MusicHandler {
 
     private Map<Long, CascadePlayer> players = new HashMap<>();
 
-    private JdaLavalink lavalink;
+    private CascadeLavalink lavalink;
 
     public MusicHandler(long clientId, int numShards, Function<Integer, JDA> jdaFunction) {
         this(new ArrayList<>(), clientId, numShards, jdaFunction);
@@ -59,10 +58,10 @@ public class MusicHandler {
         playerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
         playerManager.registerSourceManager(new BandcampAudioSourceManager());
 
-        lavalink = new JdaLavalink(String.valueOf(clientId), numShards, jdaFunction);
+        lavalink = new CascadeLavalink(String.valueOf(clientId), numShards, jdaFunction);
 
         for (LavalinkNode lavalinkNode: initialNodes) {
-            lavalink.addNode(lavalinkNode.getName(), URI.create(lavalinkNode.getHost()), lavalinkNode.getPassword());
+            lavalink.addNode(lavalinkNode);
         }
 
         instance = this;
@@ -77,12 +76,15 @@ public class MusicHandler {
     }
 
     private CascadePlayer createPlayer(Guild guild, NodeType nodeType) {
-        lavalink.getLink(guild).getPlayer();
-        return null;
+        IPlayer player = lavalink.getLink(guild, nodeType).getPlayer();
+        return new CascadePlayer(player);
     }
 
     public static MusicHandler getInstance() {
         return instance;
     }
 
+    public AudioPlayerManager getPlayerManager() {
+        return playerManager;
+    }
 }
