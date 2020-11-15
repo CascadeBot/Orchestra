@@ -12,6 +12,7 @@ import org.cascadebot.orchestra.MusicHandler;
 import org.cascadebot.orchestra.data.Playlist;
 import org.cascadebot.orchestra.data.enums.LoopMode;
 import org.cascadebot.orchestra.data.TrackData;
+import org.cascadebot.orchestra.data.enums.PlayerType;
 import org.cascadebot.orchestra.utils.StringsUtil;
 
 import java.util.ArrayList;
@@ -32,9 +33,17 @@ public class CascadePlayer {
     private boolean shuffle = false;
 
     private IPlayer player;
+    private PlayerType type;
 
     public CascadePlayer(IPlayer player) {
         this.player = player;
+        if (player instanceof LavaplayerPlayerWrapper) {
+            type = PlayerType.LAVAPLAYER;
+        } else if (player instanceof LavalinkPlayer) {
+            type = PlayerType.LAVALINK;
+        } else {
+            type = PlayerType.UNKNOWN;
+        }
     }
 
     public double getQueueLength(boolean includeCurrentSong) {

@@ -34,7 +34,7 @@ public class CascadeVoiceInterceptor implements VoiceDispatchInterceptor {
 
         if (channel == null) {
             if (link.getState() != Link.State.DESTROYED) {
-                link.onDisconnected();
+                link.destroy();
             }
         } else {
             link.setChannel(channel.getId());

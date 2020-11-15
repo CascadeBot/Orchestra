@@ -99,7 +99,7 @@ public class MusicHandler {
 
     private CascadePlayer createPlayer(String guildId, NodeType nodeType) {
         IPlayer player = lavalink.getLink(guildId, nodeType).getPlayer();
-        return new CascadePlayer(player);
+        return new CascadePlayer(player); // TODO allow lavaplayer intermixing
     }
 
     public static MusicHandler getInstance() {
