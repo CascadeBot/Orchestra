@@ -4,22 +4,27 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import lavalink.client.io.LavalinkSocket;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lavalink.client.player.event.IPlayerEventListener;
 import org.cascadebot.orchestra.MusicHandler;
+import org.cascadebot.orchestra.data.Equalizer;
 import org.cascadebot.orchestra.data.Playlist;
-import org.cascadebot.orchestra.data.enums.LoopMode;
 import org.cascadebot.orchestra.data.TrackData;
+import org.cascadebot.orchestra.data.enums.LoopMode;
 import org.cascadebot.orchestra.data.enums.PlayerType;
 import org.cascadebot.orchestra.utils.StringsUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
 
@@ -34,6 +39,8 @@ public class CascadePlayer {
 
     private IPlayer player;
     private PlayerType type;
+
+    private Equalizer equalizer = new Equalizer(this);
 
     public CascadePlayer(IPlayer player) {
         this.player = player;
@@ -207,6 +214,40 @@ public class CascadePlayer {
 
     public void setQueue(LinkedList<AudioTrack> queue) {
         this.queue = queue;
+    }
+
+    public Equalizer getEqualizer() {
+        if (type == PlayerType.LAVALINK) {
+            return equalizer;
+        } else {
+            throw new UnsupportedOperationException("Can only manipulate the equalizer when using lavalink");
+        }
+    }
+
+    public void equzlizerChanged() { // TODO https://github.com/Frederikam/Lavalink-Client/pull/30
+        if (type == PlayerType.LAVALINK) {
+            LavalinkPlayer player = (LavalinkPlayer) this.player;
+            LavalinkSocket node =  player.getLink().getNode(false);
+            if (node != null) {
+                JSONObject json = new JSONObject();
+                json.put("op", "equalizer");
+                json.put("guildId", player.getLink().getGuildId());
+                JSONArray jsonArray = new JSONArray();
+                for (Map.Entry<Integer, Float> entry : equalizer.getBandsMap().entrySet()) {
+                    if (entry.getKey() < 0 || entry.getKey() > com.sedmelluq.discord.lavaplayer.filter.equalizer.Equalizer.BAND_COUNT - 1) { // Make sure band is in range
+                        throw new UnsupportedOperationException("Cannot set a band that doesn't exist");
+                    }
+                    JSONObject bandJson = new JSONObject();
+                    bandJson.put("band", entry.getKey());
+                    bandJson.put("gain", entry.getValue());
+                    jsonArray.put(bandJson);
+                }
+                json.put("bands", jsonArray);
+                node.send(json.toString());
+            }
+        } else {
+            throw new UnsupportedOperationException("Can only manipulate the equalizer when using lavalink");
+        }
     }
 
     /* region Player methods */
