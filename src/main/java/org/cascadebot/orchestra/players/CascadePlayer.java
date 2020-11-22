@@ -5,10 +5,12 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import lavalink.client.io.LavalinkSocket;
+import lavalink.client.io.Link;
 import lavalink.client.player.IPlayer;
 import lavalink.client.player.LavalinkPlayer;
 import lavalink.client.player.LavaplayerPlayerWrapper;
 import lavalink.client.player.event.IPlayerEventListener;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.cascadebot.orchestra.MusicHandler;
 import org.cascadebot.orchestra.data.Equalizer;
 import org.cascadebot.orchestra.data.Playlist;
@@ -251,6 +253,21 @@ public class CascadePlayer {
             }
         } else {
             throw new UnsupportedOperationException("Can only manipulate the equalizer when using lavalink");
+        }
+    }
+
+    public VoiceChannel getConnectedChannel() {
+        if (player instanceof LavaplayerPlayerWrapper) {
+            return MusicHandler.getInstance().getGuild(guildId).getAudioManager().getConnectedChannel();
+        } else if (player instanceof LavalinkPlayer) {
+            String channel = ((LavalinkPlayer) player).getLink().getChannel();
+            if (channel != null) {
+                return MusicHandler.getInstance().getGuild(guildId).getVoiceChannelById(channel);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
         }
     }
 

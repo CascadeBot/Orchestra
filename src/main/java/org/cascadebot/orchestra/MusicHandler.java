@@ -58,11 +58,16 @@ public class MusicHandler {
     private OkHttpClient client;
     private JsonParser musicParser = new JsonParser();
 
+    private Function<Integer, JDA> jdaFunction;
+    private int numShards;
+
     public MusicHandler(long clientId, int numShards, Function<Integer, JDA> jdaFunction) {
         this(new ArrayList<>(), clientId, numShards, jdaFunction);
     }
 
     public MusicHandler(List<LavalinkNode> initialNodes, long clientId, int numShards, Function<Integer, JDA> jdaFunction) {
+        this.jdaFunction = jdaFunction;
+        this.numShards = numShards;
         AudioSourceManagers.registerLocalSource(playerManager);
 
         client = new OkHttpClient.Builder().build();
@@ -171,7 +176,11 @@ public class MusicHandler {
             }
         });
 
+    }
 
+    public Guild getGuild(long id) {
+        int shard = (int) (id >> 22 % numShards);
+        return jdaFunction.apply(shard).getGuildById(id);
     }
 
 }
