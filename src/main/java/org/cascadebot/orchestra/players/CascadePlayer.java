@@ -216,6 +216,10 @@ public class CascadePlayer {
         this.queue = queue;
     }
 
+    public PlayerType getType() {
+        return type;
+    }
+
     public Equalizer getEqualizer() {
         if (type == PlayerType.LAVALINK) {
             return equalizer;
