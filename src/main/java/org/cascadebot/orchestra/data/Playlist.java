@@ -40,4 +40,15 @@ public class Playlist {
         return tracks;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public PlaylistType getScope() {
+        return scope;
+    }
 }
