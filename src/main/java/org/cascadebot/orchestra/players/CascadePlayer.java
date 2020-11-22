@@ -16,6 +16,7 @@ import org.cascadebot.orchestra.data.Equalizer;
 import org.cascadebot.orchestra.data.Playlist;
 import org.cascadebot.orchestra.data.TrackData;
 import org.cascadebot.orchestra.data.enums.LoopMode;
+import org.cascadebot.orchestra.data.enums.NodeType;
 import org.cascadebot.orchestra.data.enums.PlayerType;
 import org.cascadebot.orchestra.utils.StringsUtil;
 import org.json.JSONArray;
@@ -268,6 +269,22 @@ public class CascadePlayer {
             }
         } else {
             return null;
+        }
+    }
+
+    public void leave() {
+        if (player instanceof LavaplayerPlayerWrapper) {
+            MusicHandler.getInstance().getGuild(guildId).getAudioManager().closeAudioConnection();
+        } else if (player instanceof LavalinkPlayer) {
+            ((LavalinkPlayer) player).getLink().destroy();
+        }
+    }
+
+    public void join(VoiceChannel channel) {
+        if (player instanceof LavaplayerPlayerWrapper) {
+            MusicHandler.getInstance().getGuild(guildId).getAudioManager().openAudioConnection(channel);
+        } else if (player instanceof LavalinkPlayer) {
+            MusicHandler.getInstance().getLavalink().getLink(String.valueOf(guildId)).connect(channel);
         }
     }
 
