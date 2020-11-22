@@ -8,12 +8,17 @@ package org.cascadebot.orchestra.data;
 import org.cascadebot.orchestra.data.enums.PlaylistType;
 
 import java.util.List;
+import java.util.Random;
 
 public class Playlist {
 
     private  Playlist() {
-
+        byte[] idBytes = new byte[10];
+        new Random().nextBytes(idBytes);
+        _id = new String(idBytes);
     }
+
+    private String _id; // This may or may not work as bson id
 
     private String name;
     private long ownerId;
@@ -50,5 +55,9 @@ public class Playlist {
 
     public PlaylistType getScope() {
         return scope;
+    }
+
+    public String getPlaylistId() {
+        return _id;
     }
 }
