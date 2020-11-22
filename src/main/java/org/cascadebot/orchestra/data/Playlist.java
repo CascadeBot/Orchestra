@@ -45,6 +45,10 @@ public class Playlist {
         return tracks;
     }
 
+    public void setTracks(List<String> tracks) {
+        this.tracks = tracks;
+    }
+
     public String getName() {
         return name;
     }
